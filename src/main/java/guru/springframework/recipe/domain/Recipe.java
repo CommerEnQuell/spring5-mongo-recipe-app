@@ -3,13 +3,19 @@ package guru.springframework.recipe.domain;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Document
 public class Recipe implements Identifiable {
 
+	@Id
 	private String id;
 	private String description;
 	private Integer prepTime;
@@ -22,18 +28,20 @@ public class Recipe implements Identifiable {
 	private Byte[] image;
 	private Difficulty difficulty;
 	private Notes notes;
+	
+	@DBRef
 	private Set<Category> categories = new HashSet<>();
 
 	public Recipe addIngredient(Ingredient ingredient) {
 		ingredients.add(ingredient);
-		ingredient.setRecipe(this);
+//		ingredient.setRecipe(this);
 		return this;
 	}
 	
 	public void setNotes(Notes notes) {
 		if (notes != null) {
 			this.notes = notes;
-			notes.setRecipe(this);
+//			notes.setRecipe(this);
 		}
 	}
 	

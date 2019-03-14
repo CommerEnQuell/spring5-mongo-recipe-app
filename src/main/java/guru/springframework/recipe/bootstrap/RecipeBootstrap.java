@@ -47,6 +47,8 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
 	@Override
 	@Transactional
 	public void onApplicationEvent(ContextRefreshedEvent event) {
+		loadCategories();
+		loadUom();
 		int count = recipeService.findAll().size();
 		log.debug(count + " recipe(s) found");
 		if (count == 0) {
@@ -63,7 +65,10 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
 		kwakmolen.setServings(Integer.valueOf(3));
 		kwakmolen.setDifficulty(Difficulty.EASY);
 		Category category;
-		Optional<Category> optCategory = categoryService.findByDescription("Mexican");
+		Optional<Category> optCategory = null;
+		try {
+			categoryService.findByDescription("Mexican");
+		} catch (Exception x) {}
 		if (optCategory != null && optCategory.isPresent()) {
 			category = optCategory.get();
 		} else {
@@ -97,14 +102,14 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
 			+   "Chilling tomatoes hurts their flavor, so if you want to add chopped tomato to your guacamole, add it just before serving.";
 		kwakmolen.setDirections(directions);
 		Set<Ingredient> ingredients = new HashSet<>();
-		addIngredient(ingredients, BigDecimal.valueOf(2.0d), "Piece", "ripe avocados");
+		addIngredient(ingredients, BigDecimal.valueOf(2.0d), "Each", "ripe avocados");
 		addIngredient(ingredients, BigDecimal.valueOf(0.5d), "Teaspoon", "Kosher salt");
 		addIngredient(ingredients, BigDecimal.valueOf(1.0d), "Tablespoon", "fresh lime/lemon juice");
 		addIngredient(ingredients, BigDecimal.valueOf(0.25d), "Cup", "minced red or sliced green onion");
-		addIngredient(ingredients, BigDecimal.valueOf(1.5d), "Piece", "serrano chiles, chopped (no stems or seeds)");
+		addIngredient(ingredients, BigDecimal.valueOf(1.5d), "Each", "serrano chiles, chopped (no stems or seeds)");
 		addIngredient(ingredients, BigDecimal.valueOf(2.0d), "Tablespoon", "cilantro (finely chopped)");
 		addIngredient(ingredients, null, "Dash", "freshly grated black pepper");
-		addIngredient(ingredients, BigDecimal.valueOf(0.5d), "Piece", "ripe tomato, chopped");
+		addIngredient(ingredients, BigDecimal.valueOf(0.5d), "Each", "ripe tomato, chopped");
 		
 		Recipe savedRecipe = recipeService.save(kwakmolen);
 		savedRecipe.setNotes(savedNotes);
@@ -178,16 +183,16 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
 		addIngredient(ingredients, BigDecimal.valueOf(1.0d), "Tablespoon", "finely grated orange zest");
 		addIngredient(ingredients, BigDecimal.valueOf(3.0d), "Tablespoon", "fresh-squeezed orange juice");
 		addIngredient(ingredients, BigDecimal.valueOf(2.0d), "Tablespoon", "olive oil");
-		addIngredient(ingredients, BigDecimal.valueOf(8.0d), "Piece", "small corn tortillas");
+		addIngredient(ingredients, BigDecimal.valueOf(8.0d), "Each", "small corn tortillas");
 		addIngredient(ingredients, BigDecimal.valueOf(3.0d), "Ounce", "packed baby arugula");
-		addIngredient(ingredients, BigDecimal.valueOf(5.0d), "Piece", "skinless, boneless chicken thighs");
-		addIngredient(ingredients, BigDecimal.valueOf(4.0d), "Piece", "radishes, thinly sliced");
+		addIngredient(ingredients, BigDecimal.valueOf(5.0d), "Each", "skinless, boneless chicken thighs");
+		addIngredient(ingredients, BigDecimal.valueOf(4.0d), "Each", "radishes, thinly sliced");
 		addIngredient(ingredients, BigDecimal.valueOf(0.5d), "Pint", "cherry tomatoes, halved");
-		addIngredient(ingredients, BigDecimal.valueOf(0.25d), "Piece", "red onion, thinly sliced");
+		addIngredient(ingredients, BigDecimal.valueOf(0.25d), "Each", "red onion, thinly sliced");
 		addIngredient(ingredients, null, null, "cilantro (roughly chopped)");
 		addIngredient(ingredients, BigDecimal.valueOf(0.5d), "Cup", "sour cream");
 		addIngredient(ingredients, BigDecimal.valueOf(0.25d), "Cup", "milk");
-		addIngredient(ingredients, BigDecimal.valueOf(1.0d), "Piece", "lime, cut into wedges");
+		addIngredient(ingredients, BigDecimal.valueOf(1.0d), "Each", "lime, cut into wedges");
 		
 		Recipe savedRecipe = recipeService.save(soChicken);
 		savedRecipe.setNotes(savedNotes);
@@ -217,5 +222,66 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
 		
 		ingredients.add(savedIngredient);
 	}
+
+
+    private void loadCategories(){
+        Category cat1 = new Category();
+        cat1.setDescription("American");
+        categoryService.save(cat1);
+
+        Category cat2 = new Category();
+        cat2.setDescription("Italian");
+        categoryService.save(cat2);
+
+        Category cat3 = new Category();
+        cat3.setDescription("Mexican");
+        categoryService.save(cat3);
+
+        Category cat4 = new Category();
+        cat4.setDescription("Fast Food");
+        categoryService.save(cat4);
+    }
+
+
+
+    private void loadUom(){
+
+        UnitOfMeasure uom1 = new UnitOfMeasure();
+        uom1.setDescription("Teaspoon");
+        unitOfMeasureService.save(uom1);
+
+        UnitOfMeasure uom2 = new UnitOfMeasure();
+        uom2.setDescription("Tablespoon");
+        unitOfMeasureService.save(uom2);
+
+        UnitOfMeasure uom3 = new UnitOfMeasure();
+        uom3.setDescription("Cup");
+        unitOfMeasureService.save(uom3);
+
+        UnitOfMeasure uom4 = new UnitOfMeasure();
+        uom4.setDescription("Pinch");
+        unitOfMeasureService.save(uom4);
+
+        UnitOfMeasure uom5 = new UnitOfMeasure();
+        uom5.setDescription("Ounce");
+        unitOfMeasureService.save(uom5);
+
+        UnitOfMeasure uom6 = new UnitOfMeasure();
+        uom6.setDescription("Each");
+        unitOfMeasureService.save(uom6);
+
+        UnitOfMeasure uom7 = new UnitOfMeasure();
+        uom7.setDescription("Pint");
+        unitOfMeasureService.save(uom7);
+
+        UnitOfMeasure uom8 = new UnitOfMeasure();
+        uom8.setDescription("Dash");
+        unitOfMeasureService.save(uom8);
+
+        UnitOfMeasure uom9 = new UnitOfMeasure();
+        uom9.setDescription("Clove");
+        unitOfMeasureService.save(uom9);
+   }
+
 
 }

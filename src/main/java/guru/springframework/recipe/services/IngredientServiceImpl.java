@@ -82,7 +82,7 @@ public class IngredientServiceImpl implements IngredientService {
 		} else {
 			// add new ingredient
 			Ingredient ingredient = ingredientCommandToIngredient.convert(command);
-			ingredient.setRecipe(recipe);
+//			ingredient.setRecipe(recipe);
 			recipe.addIngredient(ingredient);
 		}
 		
@@ -122,7 +122,7 @@ public class IngredientServiceImpl implements IngredientService {
 			if (ingredientOptional.isPresent()) {
 				log.debug("Ingredient found");
 				Ingredient ingredient = ingredientOptional.get();
-				ingredient.setRecipe(null);	// Causes Hibernate to delete the ingredient
+//				ingredient.setRecipe(null);	// Causes Hibernate to delete the ingredient
 				recipe.getIngredients().remove(ingredientOptional.get());
 				recipeRepository.save(recipe);
 			}
